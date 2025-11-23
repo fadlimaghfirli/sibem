@@ -10,7 +10,11 @@ class CabinetController extends Controller
     // 1. DAFTAR KABINET
     public function index()
     {
-        $cabinets = Cabinet::orderBy('tahun_periode', 'desc')->get();
+        $cabinets = Cabinet::withCount('penguruses')
+            ->orderBy('is_active', 'desc') // Yang aktif paling atas
+            ->orderBy('tahun_periode', 'desc') // Lalu urutkan tahun
+            ->get();
+
         return view('cabinets.index', compact('cabinets'));
     }
 
