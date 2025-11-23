@@ -13,11 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // User Login Admin (Untuk Anda login nanti)
+        \App\Models\User::factory()->create([
+            'name' => 'Admin BEM',
+            'email' => 'admin@bemfkip.ac.id',
+            'password' => bcrypt('admin123'), // Passwordnya: admin123
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Panggil seeder yang kita buat tadi
+        $this->call([
+            DepartementSeeder::class,
+            CabinetSeeder::class,
+            PengurusSeeder::class,
         ]);
     }
 }
