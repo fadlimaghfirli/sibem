@@ -37,5 +37,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('penguruses', App\Http\Controllers\PengurusController::class);
 
     // 3. Manajemen Departemen (Opsional, jika ingin edit deskripsi)
-    Route::resource('departements', App\Http\Controllers\DepartementController::class)->only(['index', 'edit', 'update']);
+    Route::resource('departements', App\Http\Controllers\DepartementController::class);
 });

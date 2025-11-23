@@ -1,4 +1,14 @@
 <x-app-layout>
+    <div class="flex justify-between items-center">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Data Departemen
+        </h2>
+        <a href="{{ route('departements.create') }}"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm">
+            + Tambah Departemen
+        </a>
+    </div>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Data Departemen
@@ -31,11 +41,17 @@
                             <td class="px-6 py-4 text-sm text-gray-500">
                                 {{ Str::limit($dept->deskripsi, 100) }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 flex space-x-3">
                                 <a href="{{ route('departements.edit', $dept->id) }}"
-                                    class="text-blue-600 hover:text-blue-900 font-bold text-sm">
-                                    Edit Deskripsi
-                                </a>
+                                    class="text-blue-600 hover:text-blue-900 font-bold text-sm">Edit</a>
+
+                                <form action="{{ route('departements.destroy', $dept->id) }}" method="POST"
+                                    onsubmit="return confirm('Hapus departemen ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="text-red-600 hover:text-red-900 font-bold text-sm">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach

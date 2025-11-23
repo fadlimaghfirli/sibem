@@ -13,16 +13,7 @@ return new class extends Migration
     {
         Schema::create('departements', function (Blueprint $table) {
             $table->id();
-            // Kita gunakan enum sesuai request Anda
-            $table->enum('nama', [
-                'Pengembangan Sumber Daya Manusia',
-                'Informasi dan Komunikasi',
-                'Advokasi dan Kesejahteraan Mahasiswa',
-                'Sosial Masyarakat',
-                'Pengembangan Riset dan Teknologi',
-                'Kesejahteraan Rumah Tangga',
-                'Pemberdayaan Aparatur Organisasi'
-            ]);
+            $table->string('nama');
             $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
