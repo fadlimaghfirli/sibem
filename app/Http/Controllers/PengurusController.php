@@ -11,12 +11,43 @@ use Illuminate\Support\Facades\Storage;
 class PengurusController extends Controller
 {
     // 1. MENAMPILKAN DAFTAR PENGURUS
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data pengurus, urutkan terbaru, dan loading relasinya
-        $penguruses = Pengurus::with(['cabinet', 'departement'])->latest()->paginate(10);
+        // 1. Data Pendukung untuk Dropdown di Modal
+        $cabinets = Cabinet::orderBy('tahun_periode', 'desc')->get();
+        $departements = Departement::all(); // <--- INI TAMBAHAN PENTING
 
-        return view('penguruses.index', compact('penguruses'));
+        // 2. Logika Filter Kabinet (Sama seperti sebelumnya)
+        if ($request->has('cabinet_id')) {
+            $selectedCabinet = Cabinet::find($request->cabinet_id);
+        } else {
+            $selectedCabinet = Cabinet::where('is_active', true)->first();
+            if (!$selectedCabinet) {
+                $selectedCabinet = Cabinet::latest()->first();
+            }
+        }
+
+        // 3. Query Data (Sama seperti sebelumnya)
+        $query = Pengurus::with(['departement'])
+            ->when($selectedCabinet, function ($q) use ($selectedCabinet) {
+                return $q->where('cabinet_id', $selectedCabinet->id);
+            });
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('nim', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $penguruses = $query->orderByRaw("FIELD(jabatan, 'Gubernur', 'Wakil Gubernur', 'Sekretaris Jenderal', 'Bendahara Umum', 'Kepala Departemen') DESC")
+            ->orderBy('departement_id', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
+        // Kirim $departements ke view
+        return view('penguruses.index', compact('penguruses', 'cabinets', 'selectedCabinet', 'departements'));
     }
 
     // 2. HALAMAN FORM TAMBAH DATA
