@@ -62,9 +62,20 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $p->cabinet->tahun_periode }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="#" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
-                                    <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-3">
+                                    <a href="{{ route('penguruses.edit', $p->id) }}"
+                                        class="text-yellow-600 hover:text-yellow-900 font-bold">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('penguruses.destroy', $p->id) }}" method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus pengurus ini? Data tidak bisa dikembalikan.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900 font-bold">
+                                            Hapus
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

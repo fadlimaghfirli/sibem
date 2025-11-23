@@ -55,5 +55,58 @@ class PengurusController extends Controller
         return redirect()->route('penguruses.index')->with('success', 'Data pengurus berhasil ditambahkan!');
     }
 
-    // Fungsi edit, update, destroy kita kerjakan nanti agar tidak kepanjangan
+    // 4. HALAMAN EDIT DATA
+    public function edit(Pengurus $pengurus)
+    {
+        $cabinets = Cabinet::where('is_active', true)->get();
+        $departements = Departement::all();
+
+        return view('penguruses.edit', compact('pengurus', 'cabinets', 'departements'));
+    }
+
+    // 5. PROSES UPDATE DATA
+    public function update(Request $request, Pengurus $pengurus)
+    {
+        // Validasi (mirip store, tapi foto tidak wajib/nullable)
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'nim' => 'required|string|max:20',
+            'angkatan' => 'required|integer',
+            'prodi' => 'required|string',
+            'jabatan' => 'required|string',
+            'cabinet_id' => 'required|exists:cabinets,id',
+            'departement_id' => 'nullable|exists:departements,id',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Cek apakah user mengupload foto baru
+        if ($request->hasFile('foto')) {
+            // 1. Hapus foto lama jika ada (agar server tidak penuh)
+            if ($pengurus->foto) {
+                Storage::disk('public')->delete($pengurus->foto);
+            }
+            // 2. Simpan foto baru
+            $path = $request->file('foto')->store('pengurus', 'public');
+            $validated['foto'] = $path;
+        }
+
+        // Update data di database
+        $pengurus->update($validated);
+
+        return redirect()->route('penguruses.index')->with('success', 'Data pengurus berhasil diperbarui!');
+    }
+
+    // 6. PROSES HAPUS DATA
+    public function destroy(Pengurus $pengurus)
+    {
+        // Hapus foto fisik dari penyimpanan
+        if ($pengurus->foto) {
+            Storage::disk('public')->delete($pengurus->foto);
+        }
+
+        // Hapus data dari database
+        $pengurus->delete();
+
+        return redirect()->route('penguruses.index')->with('success', 'Data pengurus berhasil dihapus!');
+    }
 }
