@@ -31,8 +31,7 @@
                         B
                     </div>
                     <div>
-                        <span class="block text-xl font-bold text-gray-900 leading-none tracking-tight">BEM
-                            KAMPUS</span>
+                        <span class="block text-xl font-bold text-gray-900 leading-none tracking-tight">BEM-FKIP</span>
                         <span class="text-xs text-blue-600 font-semibold tracking-wider uppercase">Portal Informasi
                             Organisasi</span>
                     </div>
@@ -158,7 +157,8 @@
                                                     <path fill-rule="evenodd"
                                                         d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                                                         clip-rule="evenodd"></path>
-                                                </svg></div>
+                                                </svg>
+                                            </div>
                                         @endif
                                     </div>
                                     <div
@@ -289,7 +289,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
                 <div>
-                    <h3 class="text-2xl font-bold mb-4">BEM KAMPUS</h3>
+                    <h3 class="text-2xl font-bold mb-4">BEM-FKIP</h3>
                     <p class="text-gray-400 leading-relaxed">
                         Wadah aspirasi dan kreasi mahasiswa. Bergerak bersama untuk menciptakan lingkungan kampus yang
                         inklusif dan prestatif.
@@ -329,7 +329,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} Sistem Informasi BEM. All rights reserved. Built with Laravel & Tailwind.
+                &copy; {{ date('Y') }} Sistem Informasi BEM-FKIP. All rights reserved.
             </div>
         </div>
     </footer>
