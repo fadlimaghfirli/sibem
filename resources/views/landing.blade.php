@@ -107,146 +107,181 @@
         </div>
     </section>
 
-    <section id="struktur" class="py-20 bg-white relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="struktur" class="py-24 bg-gray-50 relative overflow-hidden">
+        <div class="absolute inset-0"
+            style="background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 32px 32px; opacity: 0.5;">
+        </div>
 
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 border-b border-gray-100 pb-8">
-                <div class="max-w-2xl">
-                    <h2 class="text-3xl font-bold text-gray-900">Struktur Organisasi</h2>
-                    <p class="mt-2 text-gray-500">Mengenal wajah-wajah di balik layar yang menggerakkan organisasi.</p>
-                </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-                <form action="{{ route('landing') }}" method="GET" class="relative group w-full md:w-auto">
-                    <label for="cabinet_id"
-                        class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Pilih
-                        Periode</label>
-                    <div class="relative">
+            <div class="text-center mb-16">
+                <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Struktur Organisasi</span>
+                <h2 class="text-4xl font-extrabold text-gray-900 mt-2 mb-4">Hierarki Kepengurusan</h2>
+
+                <div class="flex justify-center mt-6">
+                    <form action="{{ route('landing') }}" method="GET" class="relative z-20">
                         <select name="cabinet_id" onchange="this.form.submit()"
-                            class="block w-full md:w-64 pl-4 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-xl bg-gray-50 cursor-pointer shadow-sm hover:shadow-md transition">
+                            class="bg-white border-2 border-blue-100 text-gray-700 py-2 pl-4 pr-10 rounded-full focus:outline-none focus:border-blue-500 font-medium shadow-sm cursor-pointer hover:border-blue-300 transition">
                             @foreach ($cabinets as $cab)
                                 <option value="{{ $cab->id }}"
                                     {{ $selectedCabinet && $selectedCabinet->id == $cab->id ? 'selected' : '' }}>
-                                    {{ $cab->tahun_periode }} - {{ $cab->nama_kabinet }}
+                                    Periode {{ $cab->tahun_periode }} - {{ $cab->nama_kabinet }}
                                 </option>
                             @endforeach
                         </select>
-                        <div
-                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
-            @if ($penguruses->count() > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    @foreach ($penguruses as $p)
-                        <div
-                            class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col">
+            @if ($selectedCabinet)
 
-                            <div class="relative w-full max-h-72 aspect-[3/4] bg-gray-200 overflow-hidden">
-                                @if ($p->foto)
-                                    <img src="{{ asset('storage/' . $p->foto) }}" alt="{{ $p->nama }}"
-                                        class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110">
-                                @else
-                                    <div
-                                        class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 text-gray-300">
-                                        <svg class="w-24 h-24 mb-2 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                        </svg>
-                                        <span class="text-sm font-medium text-gray-400">No Photo</span>
-                                    </div>
-                                @endif
+                <div class="flex flex-wrap justify-center gap-8 mb-12 relative">
+                    <div
+                        class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-px h-12 bg-blue-300 hidden md:block">
+                    </div>
 
+                    @foreach ($pimpinan as $p)
+                        <div class="w-full max-w-xs z-10">
+                            <div
+                                class="bg-white rounded-3xl p-4 shadow-xl border-b-4 border-yellow-400 text-center transform hover:-translate-y-2 transition duration-300">
                                 <div
-                                    class="absolute inset-0 bg-gradient-to-t from-gray-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                </div>
-
-                                <div class="absolute top-4 left-4">
-                                    @if ($p->jabatan == 'Gubernur' || $p->jabatan == 'Wakil Gubernur')
-                                        <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-yellow-400/90 text-yellow-900 backdrop-blur-sm shadow-sm">
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                            </svg>
-                                            Pimpinan Inti
-                                        </span>
-                                    @elseif($p->departement)
-                                        <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600/90 text-white backdrop-blur-sm shadow-sm">
-                                            {{ Str::limit($p->departement->nama, 20) }}
-                                        </span>
-                                    @else
-                                        <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-white backdrop-blur-sm shadow-sm">
-                                            Pengurus Pusat
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="p-6 flex flex-col flex-grow justify-between bg-white relative z-10">
-                                <div>
-                                    <h3 class="text-xl font-extrabold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 mb-1"
-                                        title="{{ $p->nama }}">
-                                        {{ $p->nama }}
-                                    </h3>
-
-                                    <p class="text-blue-600 font-bold text-sm mb-4">
-                                        {{ $p->jabatan }}
-                                    </p>
-
+                                    class="relative mx-auto w-40 h-40 mb-4 rounded-full p-1 bg-gradient-to-tr from-yellow-400 to-orange-500">
                                     <div
-                                        class="w-12 h-1 bg-gray-100 rounded-full mb-4 group-hover:bg-blue-100 transition-colors">
+                                        class="w-full h-full rounded-full overflow-hidden bg-white border-4 border-white">
+                                        @if ($p->foto)
+                                            <img src="{{ asset('storage/' . $p->foto) }}"
+                                                class="w-full h-full object-cover">
+                                        @else
+                                            <div
+                                                class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                                                <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg></div>
+                                        @endif
+                                    </div>
+                                    <div
+                                        class="absolute bottom-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full border border-white shadow-sm">
+                                        TOP
                                     </div>
                                 </div>
-
-                                <div class="space-y-2.5 text-sm text-gray-500">
-                                    <div class="flex items-start">
-                                        <svg class="w-5 h-5 text-gray-400 mr-2.5 flex-shrink-0 mt-0.5" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                                            <path
-                                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                                        </svg>
-                                        <span class="font-medium leading-tight">{{ $p->prodi }}</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <svg class="w-5 h-5 text-gray-400 mr-2.5 flex-shrink-0" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                            </path>
-                                        </svg>
-                                        <span class="font-medium">Angkatan {{ $p->angkatan }} <span
-                                                class="text-gray-300 mx-1">|</span> NIM {{ $p->nim }}</span>
-                                    </div>
-                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 leading-tight">{{ $p->nama }}</h3>
+                                <p class="text-yellow-600 font-bold text-sm uppercase mt-1">{{ $p->jabatan }}</p>
+                                <p class="text-gray-400 text-xs mt-2">{{ $p->prodi }}</p>
                             </div>
                         </div>
                     @endforeach
                 </div>
+
+                @if ($bph_inti->count() > 0)
+                    <div class="relative mb-20">
+                        <div
+                            class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-3/4 h-px bg-blue-300 hidden md:block">
+                        </div>
+                        <div
+                            class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-px h-12 bg-blue-300 hidden md:block">
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-6 px-4">
+                            @foreach ($bph_inti as $p)
+                                <div
+                                    class="bg-white rounded-2xl p-4 w-64 shadow-lg border border-gray-100 text-center flex flex-col items-center hover:shadow-xl transition">
+                                    <div
+                                        class="w-24 h-24 rounded-full overflow-hidden mb-3 bg-gray-200 border-2 border-blue-100">
+                                        @if ($p->foto)
+                                            <img src="{{ asset('storage/' . $p->foto) }}"
+                                                class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full bg-gray-200"></div>
+                                        @endif
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 text-lg leading-snug">{{ $p->nama }}</h4>
+                                    <span
+                                        class="bg-blue-50 text-blue-700 px-3 py-0.5 rounded-full text-xs font-bold mt-1 mb-2">{{ $p->jabatan }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <div class="max-w-7xl mx-auto px-4">
+                    <h3
+                        class="text-center text-2xl font-bold text-gray-800 mb-10 flex items-center justify-center gap-3">
+                        <span class="h-px w-12 bg-gray-300"></span>
+                        Divisi & Departemen
+                        <span class="h-px w-12 bg-gray-300"></span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        @foreach ($departments_data as $dept)
+                            <div
+                                class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition duration-300">
+                                <div
+                                    class="bg-gradient-to-r from-blue-900 to-blue-700 p-4 flex justify-between items-center">
+                                    <h4 class="text-white font-bold text-lg">{{ $dept->nama }}</h4>
+                                    <span
+                                        class="bg-white/20 text-white text-xs px-2 py-1 rounded">{{ $dept->members->count() }}
+                                        Anggota</span>
+                                </div>
+
+                                <div class="p-5">
+                                    <div class="space-y-4">
+                                        @foreach ($dept->members as $member)
+                                            <div class="flex items-center group">
+                                                <div
+                                                    class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border border-gray-100 bg-gray-100 mr-4">
+                                                    @if ($member->foto)
+                                                        <img src="{{ asset('storage/' . $member->foto) }}"
+                                                            class="w-full h-full object-cover">
+                                                    @else
+                                                        <div
+                                                            class="w-full h-full bg-gray-200 flex items-center justify-center text-xs">
+                                                            N/A</div>
+                                                    @endif
+                                                </div>
+
+                                                <div class="flex-1 min-w-0">
+                                                    <p
+                                                        class="text-sm font-bold text-gray-900 truncate group-hover:text-blue-600 transition">
+                                                        {{ $member->nama }}
+                                                    </p>
+                                                    <div class="flex items-center gap-2">
+                                                        @if (str_contains($member->jabatan, 'Kepala'))
+                                                            <span
+                                                                class="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">Kepala</span>
+                                                        @elseif(str_contains($member->jabatan, 'Sekretaris'))
+                                                            <span
+                                                                class="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">Sekretaris</span>
+                                                        @else
+                                                            <span
+                                                                class="text-xs text-gray-500">{{ $member->jabatan }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             @else
-                <div
-                    class="flex flex-col items-center justify-center py-24 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-300">
-                    <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
-                    </svg>
-                    <h3 class="text-lg font-medium text-gray-900">Belum ada data pengurus</h3>
-                    <p class="text-gray-500 max-w-sm mt-1">Data pengurus untuk periode kabinet ini belum diinput oleh
-                        admin.</p>
+                <div class="text-center py-20">
+                    <div class="inline-block p-4 rounded-full bg-gray-100 mb-4">
+                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Data Struktur Belum Tersedia</h3>
+                    <p class="text-gray-500 mt-1">Silakan pilih periode kabinet lain atau hubungi admin.</p>
                 </div>
             @endif
+
         </div>
     </section>
 

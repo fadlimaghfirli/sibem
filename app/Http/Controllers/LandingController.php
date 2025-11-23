@@ -10,7 +10,7 @@ class LandingController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil daftar semua kabinet
+        // 1. Ambil daftar kabinet
         $cabinets = Cabinet::orderBy('tahun_periode', 'desc')->get();
 
         // 2. Tentukan kabinet aktif
@@ -20,27 +20,57 @@ class LandingController extends Controller
             $selectedCabinet = Cabinet::where('is_active', true)->first();
         }
 
-        // 3. Query Data Pengurus (dengan Eager Loading departemen)
-        $penguruses = collect(); // Default kosong
+        // Default data kosong
+        $pimpinan = collect();
+        $bph_inti = collect();
+        $departments_data = collect();
+        $totalAnggota = 0;
+
         if ($selectedCabinet) {
-            $penguruses = Pengurus::with('departement')
+            // Ambil semua pengurus di kabinet ini
+            $allPengurus = Pengurus::with('departement')
                 ->where('cabinet_id', $selectedCabinet->id)
-                // Urutkan: Gubernur dulu, lalu Kepala Dept, lalu sisanya
-                ->orderByRaw("FIELD(jabatan, 'Gubernur', 'Wakil Gubernur', 'Sekretaris Jenderal', 'Bendahara Umum', 'Kepala Departemen') DESC")
-                ->orderBy('departement_id', 'asc')
                 ->get();
+
+            $totalAnggota = $allPengurus->count();
+
+            // LEVEL 1: Gubernur & Wakil
+            $pimpinan = $allPengurus->filter(function ($item) {
+                return in_array($item->jabatan, ['Gubernur', 'Wakil Gubernur']);
+            })->sortBy(fn($item) => $item->jabatan === 'Wakil Gubernur'); // Gubernur dulu baru Wakil
+
+            // LEVEL 2: Sekjen, Bendum, Sekum (Tanpa Departemen)
+            $bph_inti = $allPengurus->filter(function ($item) {
+                return in_array($item->jabatan, ['Sekretaris Jenderal', 'Sekretaris Umum', 'Bendahara Umum'])
+                    && $item->departement_id == null;
+            });
+
+            // LEVEL 3: Departemen beserta anggotanya
+            // Kita ambil departemen yang ada, lalu "inject" pengurusnya
+            $departments_data = \App\Models\Departement::all()->map(function ($dept) use ($selectedCabinet) {
+                // Ambil pengurus yang ada di dept ini & kabinet ini
+                $members = Pengurus::where('cabinet_id', $selectedCabinet->id)
+                    ->where('departement_id', $dept->id)
+                    ->orderByRaw("FIELD(jabatan, 'Kepala Departemen', 'Sekretaris Departemen', 'Anggota Departemen', 'Staff Departemen')")
+                    ->get();
+
+                $dept->members = $members;
+                return $dept;
+            })->filter(function ($dept) {
+                return $dept->members->count() > 0; // Hanya tampilkan dept yang ada orangnya
+            });
         }
 
-        // 4. Data Tambahan untuk Statistik (Informatif)
         $totalDepartemen = \App\Models\Departement::count();
-        $totalAnggota = $penguruses->count();
 
         return view('landing', [
             'cabinets' => $cabinets,
             'selectedCabinet' => $selectedCabinet,
-            'penguruses' => $penguruses,
-            'totalDepartemen' => $totalDepartemen, // Kirim data ini
-            'totalAnggota' => $totalAnggota // Kirim data ini
+            'pimpinan' => $pimpinan,
+            'bph_inti' => $bph_inti,
+            'departments_data' => $departments_data,
+            'totalDepartemen' => $totalDepartemen,
+            'totalAnggota' => $totalAnggota
         ]);
     }
 }
